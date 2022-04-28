@@ -16,6 +16,7 @@ Cardiotocography is an essential indicator of fetal states. Earlier detection of
     Date - of the examination
     b - start instant
     e - end instant
+
 #### Measurements:
     LBE - baseline value (medical expert)
     LB - baseline value (SisPorto)
@@ -40,6 +41,7 @@ Cardiotocography is an essential indicator of fetal states. Earlier detection of
     Median - histogram median
     Variance - histogram variance
     Tendency - histogram tendency: -1=left assymetric; 0=symmetric; 1=right assymetric
+
 #### Classification:
     A - calm sleep
     B - REM sleep
@@ -53,6 +55,7 @@ Cardiotocography is an essential indicator of fetal states. Earlier detection of
     SUSP - suspect pattern
     CLASS - Class code (1 to 10) for classes A to SUSP
     NSP - Normal=1; Suspect=2; Pathologic=3
+
 ## Data Cleaning
     # module loading 
 
