@@ -86,6 +86,7 @@ Cardiotocography is an essential indicator of fetal states. Earlier detection of
     raw_data = pd.read_table("CTG.csv", sep = ",")
     raw_data
     
-    
+<img width="1137" alt="image" src="https://user-images.githubusercontent.com/89613437/165841710-cd01fc62-3088-409e-8a03-d3846148d8af.png">
+
 
 
