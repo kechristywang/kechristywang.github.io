@@ -88,5 +88,53 @@ Cardiotocography is an essential indicator of fetal states. Earlier detection of
     
 <img width="1137" alt="image" src="https://user-images.githubusercontent.com/89613437/165841710-cd01fc62-3088-409e-8a03-d3846148d8af.png">
 
+    # remove meaningless rows. There are 2126 fetuses in this dataset.
+    df = raw_data.drop([2126,2127,2128])
+    # NSP is the target in this dataset. Check the balance of target.
+    df.NSP.value_counts()
+    # Even if it is unbalanced, I will give priority to using real data to build machine learning models. If the results are not good, I will try oversampling or undersampling
+    
+<img width="218" alt="image" src="https://user-images.githubusercontent.com/89613437/165842311-6907d76c-ff99-4522-adfa-af7660e605e3.png">
 
+    # Confirm the distribution of the target
+    fetal_states = df.NSP.value_counts().to_frame()
+    plt.figure(dpi=200)
+    pie_fetal_states = plt.pie(fetal_states.NSP, labels=["Normal", "Suspect", "Pathologic"], 
+                           colors = ["steelblue", "lightskyblue", "lightblue"], autopct="%1.0f%%")
+    plt.title("Fetal States");
+    
+<img width="560" alt="image" src="https://user-images.githubusercontent.com/89613437/165842442-c79e7b7d-7dde-46e2-857c-6bb20bfd3b44.png">
+
+    # Based on the background information, the exam data is not important. 
+    # The CLASS and 10 Morphologic Patterns (A, B, C...) have same information, and they are come from doctors.
+    # This project is based on CTG data, so I delet these features.
+
+    # remove FileName, Date, and SegFile
+    df = df.drop(['FileName', 'Date', 'SegFile'], axis = 1)
+    # remove b, e
+    df = df.drop(['b', 'e'], axis = 1)
+    # remove A, B, C, D, E, AD, DE, LD, FS, SUSP, and CLASS
+    df = df.drop(['A', 'B', 'C', 'D', 'E', 'AD', 'DE', 'LD', 'FS', 'SUSP', 'CLASS'], axis = 1)
+    df
+
+<img width="1078" alt="image" src="https://user-images.githubusercontent.com/89613437/165842564-575ef28e-af1b-4e5a-abc2-9c012cd0dcc1.png">
+
+    # Check the characteristics of features. According to the backgroud information, the zero is meaningful.
+    df.describe().T
+
+
+
+
+
+
+
+
+
+
+    
+    
+    
+    
+    
+    
 
