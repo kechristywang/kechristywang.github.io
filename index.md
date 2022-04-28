@@ -297,5 +297,183 @@ Cardiotocography is an essential indicator of fetal states. Earlier detection of
 
 <img width="298" alt="image" src="https://user-images.githubusercontent.com/89613437/165844591-7405cd3c-537b-47d8-8b2f-15d12ac152ae.png">
 
+    # find the best criterion of decision trees
+
+    RF = RandomForestClassifier(random_state = 515)
+    score = cross_val_score(RF,X,y,cv=10).mean()
+    print('gini score: %.4f'%score)
+    RF = RandomForestClassifier(criterion = 'entropy',random_state = 515)
+    score = cross_val_score(RF,X,y,cv=10).mean()
+    print('entropy score: %.4f'%score)
+
+<img width="198" alt="image" src="https://user-images.githubusercontent.com/89613437/165845569-b62e1ec9-f838-4633-a8d1-6aa6982c2bd6.png">
+
+    # find the best number of trees
+
+    superpa = []
+    for i in range(100):
+        rfc = RandomForestClassifier(criterion = 'entropy', n_estimators=i+1, random_state = 515, max_features = 'sqrt', bootstrap = True, oob_score = False)
+        rfc_s_mod = rfc.fit(x_train, y_train)
+        rfc_s = rfc.score(x_test, y_test)
+        superpa.append(rfc_s)
+    print(max(superpa),superpa.index(max(superpa))+1)
+    plt.figure(figsize=[8,5], dpi = 100)
+    plt.plot(range(1,101),superpa)
+    plt.title("Number of Trees Curve", fontsize = 20)
+    plt.show()
+
+<img width="783" alt="image" src="https://user-images.githubusercontent.com/89613437/165845682-d0c3fa3e-c63c-445c-8d2d-8fd12b9db00b.png">
+
+    # find the best number of Tree Depth
+
+    MD_L = []
+    for i in range(30):
+        MD = RandomForestClassifier(criterion = 'entropy', n_estimators=94, max_depth =i+1, 
+                                    random_state = 515, max_features = 'sqrt', bootstrap = True, oob_score = False)
+        MD_s_mod = MD.fit(x_train, y_train)
+        MD_s = MD.score(x_test, y_test)
+        MD_L.append(MD_s)
+    print(max(MD_L),MD_L.index(max(MD_L))+1)
+    plt.figure(figsize=[8,5], dpi = 100)
+    plt.plot(range(1,31),MD_L)
+    plt.title("Tree Depth Curve", fontsize = 20)
+    plt.show()
+
+<img width="786" alt="image" src="https://user-images.githubusercontent.com/89613437/165845750-90cbb0a3-b859-421d-8353-a2def4e43da2.png">
+
+    # find the best The Minimum Number of Samples Required to Split an Internal Node
+
+    MSS_L = []
+    for i in range(2, 10):
+        MSS = RandomForestClassifier(criterion = 'entropy', n_estimators = 94, max_depth = 20, min_samples_split = i,
+                                     random_state = 515, max_features = 'sqrt', bootstrap = True, oob_score = False)
+        MSS_s_mod = MSS.fit(x_train, y_train)
+        MSS_s = MSS.score(x_test, y_test)
+        MSS_L.append(MSS_s)
+    print(max(MSS_L),MSS_L.index(max(MSS_L))+2)
+    plt.figure(figsize=[8,5], dpi = 100)
+    plt.plot(range(2,10),MSS_L)
+    plt.title("The Minimum Number of Samples Required to Split an Internal Node Curve", fontsize = 15)
+    plt.show()
+    
+<img width="895" alt="image" src="https://user-images.githubusercontent.com/89613437/165845862-16a61537-b1a0-4255-bbad-75977bc1111a.png">
+
+    # find the best The Minimum Number of Samples Required to be at a Leaf Node
+
+    MSL_L = []
+    for i in range(15):
+        MSL = RandomForestClassifier(criterion = 'entropy', n_estimators = 94, max_depth = 20, min_samples_split = 2, min_samples_leaf = i+1,
+                                           random_state = 515, max_features = 'sqrt', bootstrap = True, oob_score = False)
+        MSL_s_mod = MSL.fit(x_train, y_train)
+        MSL_s = MSL.score(x_test, y_test)
+        MSL_L.append(MSL_s)
+    print(max(MSL_L),MSL_L.index(max(MSL_L))+1)
+    plt.figure(figsize=[8,5], dpi = 100)
+    plt.plot(range(1,16),MSL_L)
+    plt.title("The Minimum Number of Samples Required to be at a Leaf Node Curve", fontsize = 15)
+    plt.show()
+    
+<img width="846" alt="image" src="https://user-images.githubusercontent.com/89613437/165845943-dd282fdd-f49d-474b-96fb-cdeda6701390.png">
+
+   # find the best number of features
+
+    MF_L = []
+    for i in range(15):
+        MF = RandomForestClassifier(criterion = 'entropy', n_estimators = 94, max_depth = 20, min_samples_split = 2, min_samples_leaf = 1,
+                                           random_state = 515, max_features = i+1, bootstrap = True, oob_score = False)
+        MF_s_mod = MF.fit(x_train, y_train)
+        MF_s = MF.score(x_test, y_test)
+        MF_L.append(MF_s)
+    print(max(MF_L),MF_L.index(max(MF_L))+1)
+    plt.figure(figsize=[8,5], dpi = 100)
+    plt.plot(range(1,16),MF_L)
+    plt.title("Number of Features Curve", fontsize = 20)
+    plt.show() 
+    
+<img width="800" alt="image" src="https://user-images.githubusercontent.com/89613437/165846055-34fb0f06-42a2-47b5-8930-7aac8c6089b7.png">
+
+    # Final model
+
+    random_forest = RandomForestClassifier(criterion = 'entropy', n_estimators = 94, max_depth = 20, min_samples_split = 2, min_samples_leaf = 1,
+                                           random_state = 515, max_features = 3, bootstrap = True, oob_score = False)
+    random_forest_mod = random_forest.fit(x_train, y_train)
+    
+    # accuracy of model
+
+    train_score = random_forest.score(x_train, y_train)
+    test_score = random_forest.score(x_test, y_test)
+
+    print('train_score: ' , train_score)
+    print('test_score: ' , test_score)
+    
+<img width="297" alt="image" src="https://user-images.githubusercontent.com/89613437/165846212-2fd8d207-63fa-4296-8705-736107e10fec.png">
+
+    # precision, recall, f1-score, and support
+
+    predictions=random_forest.predict(x_test)
+    print(classification_report(y_test, predictions))
+
+    # The discrimination ability of the model for the suspected group is relatively poor.
+
+<img width="488" alt="image" src="https://user-images.githubusercontent.com/89613437/165846314-580dac7f-5a71-4209-866c-e297e390c7a2.png">
+
+    ## confusion matrix
+    test_predict = random_forest.predict(x_test)
+    confusion_matrix_result = metrics.confusion_matrix(test_predict,y_test)
+
+    plt.figure(figsize=(9, 9), dpi=100)
+    sns.heatmap(confusion_matrix_result, annot=True, 
+                fmt=".0f", linewidths=.5, square = True, 
+                cmap= 'Blues', annot_kws={"size": 20},
+                xticklabels = ['Normal', 'Suspect', 'Pathologic'],
+                yticklabels = ['Normal', 'Suspect', 'Pathologic'],)
+    plt.xticks(fontsize=15)
+    plt.yticks(fontsize=15)
+    plt.xlabel('Predicted labels', fontsize = 20);
+    plt.ylabel('True labels', fontsize = 20);
+    plt.title('Accuracy Score: {}'.format(metrics.accuracy_score(y_test,test_predict)), size = 17);
+    plt.show()
+
+<img width="542" alt="image" src="https://user-images.githubusercontent.com/89613437/165846457-5626c4db-cb5a-42fb-83cb-ed90e4b33726.png">
+
+    # Ranking the importance of features
+
+    Features = ['LB', 'AC', 'UC', 'ASTV', 'MSTV', 'ALTV', 'MLTV', 'DL', 'DP', 'Width',
+           'Max', 'Nmax', 'Nzeros', 'Mode', 'Variance']
+
+
+    importances = random_forest_mod.feature_importances_
+
+    indices = np.argsort(importances)[::-1]
+    #print(indices)
+    names = [Features[i] for i in indices]
+    plt.figure(dpi=200)
+    plt.title("Feature Importance")
+    plt.bar(range(X.shape[1]), importances[indices])
+    plt.xticks(range(X.shape[1]), names, rotation= 90)
+    plt.show()
+
+<img width="718" alt="image" src="https://user-images.githubusercontent.com/89613437/165846576-252c284e-1bdd-4eaa-bec7-cb49f2541e23.png">
+
+    # Relationship between four important characteristics and groups
+
+    column = ['ASTV', 'MSTV', 'ALTV', 'Mode']
+
+    fig = plt.figure(figsize=(15,9), dpi=300)
+    for i in range(0,4):
+        plt.subplots_adjust(wspace=0.5,hspace=0.6)
+        ax = fig.add_subplot(2,2,i + 1)
+        sns.boxplot(y='NSP', x=column[i], saturation=0.5,palette='pastel', data=df, orient = 'h' )
+        ax.set_yticklabels(labels = ['Normal', 'Suspect', 'Pathologic'], rotation = 60,fontsize = 10)
+        plt.title(column[i])
+
+<img width="705" alt="image" src="https://user-images.githubusercontent.com/89613437/165846698-84b7f748-c93b-4929-94cd-4bbdfaaf521f.png">
+
+## Summary
+
+The accuracy of fetal state prediction model using random forest can reach 0.958. More important features can give doctors some clues. 
+
+There are still aspects to be improved in this model. If more data about suspict group and pathological group can be added, this model can be improved.
+
 
 
